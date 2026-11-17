@@ -19,6 +19,12 @@ export default {
     ]
   },
 
+  // Base URL of the WordPress site to read posts from (its REST API must be public).
+  // The original source, css-tricks.com, no longer allows anonymous REST API access.
+  publicRuntimeConfig: {
+    wpApiUrl: process.env.WP_API_URL || 'https://wordpress.org/news'
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
   ],

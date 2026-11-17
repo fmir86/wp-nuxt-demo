@@ -1,69 +1,52 @@
 # wp-nuxt-demo
 
-## Build Setup
+A small Nuxt 2 demo (2021) that uses WordPress as a headless CMS. It reads the latest 20 posts from a WordPress site through the WordPress REST API (`/wp-json/wp/v2/posts`), keeps them in a Vuex store and renders a list of titles and excerpts that link to the original articles. The page is server rendered, and `nuxt generate` bakes the posts into static HTML.
+
+## Requirements
+
+- Node.js 20 or newer (verified on Node 20.20, 22.23 and 24.21)
+- npm 9 or newer
+
+Nuxt 2 is end of life. This project stays on its last release (2.18.1), which builds on current Node versions without `NODE_OPTIONS=--openssl-legacy-provider`.
+
+## Configuration
+
+| Variable     | Default                  | Description |
+| :----------- | :----------------------- | :---------- |
+| `WP_API_URL` | `https://wordpress.org/news` | Base URL of the WordPress site to read posts from. Its REST API must allow anonymous reads. |
+
+The demo originally read from css-tricks.com, which no longer allows anonymous REST API access, so the default is now the WordPress.org news blog. Point `WP_API_URL` at any WordPress site with a public REST API, for example:
 
 ```bash
-# install dependencies
-$ npm install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
+export WP_API_URL=https://wordpress.org/news
 ```
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+The value is read when the dev server starts or when `npm run generate` runs, so set it before running either command.
 
-## Special Directories
+## Install
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+```bash
+npm ci
+```
 
-### `assets`
+## Run
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
+```bash
+# dev server with hot reload at http://localhost:3000
+WP_API_URL=https://wordpress.org/news npm run dev
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
+# build, then generate the static site into dist/
+npm run build
+WP_API_URL=https://wordpress.org/news npm run generate
 
-### `components`
+# serve the generated dist/ folder at http://localhost:3000
+npm run start
+```
 
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
+## Project structure
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+```text
+pages/index.vue   post list, loading and error states
+store/index.js    Vuex store; the getPosts action calls the WordPress REST API
+nuxt.config.js    Nuxt config, including the WP_API_URL runtime setting
+```
